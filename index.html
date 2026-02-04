@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clouds Modding Hub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS STYLES --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none; /* Prevents text highlighting */
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            /* The specific pink/red gradient from the reference */
+            background: linear-gradient(160deg, #ff00cc, #ff3333, #ff5e62);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            min-height: 100vh;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Version Badge */
+        .version-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Header Section */
+        header {
+            margin-top: 40px;
+            margin-bottom: 20px;
+            text-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        p.shoutout {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* Discord Button */
+        .discord-btn {
+            background: linear-gradient(90deg, #11998e, #38ef7d);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 20px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 40px;
+            text-decoration: none;
+        }
+
+        .discord-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* Card Container */
+        .card-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            width: 100%;
+            max-width: 350px;
+        }
+
+        /* The Cards */
+        .card {
+            background-color: #ffe6e6; /* Light pinkish white */
+            border-radius: 25px;
+            padding: 30px;
+            color: #ff3333; /* Dark pink text */
+            cursor: pointer;
+            transition: transform 0.2s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            background-color: #fff0f0;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        /* Audio Button (Floating) */
+        .audio-fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2193b0, #6dd5ed);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 100;
+            border: 2px solid white;
+        }
+
+        .audio-fab span {
+            font-size: 30px;
+        }
+
+        /* Modals (Popups) */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            color: #333;
+            padding: 30px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 400px;
+            text-align: center;
+            position: relative;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+        }
+
+        /* Specific Interaction Styles */
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .status-dot {
+            height: 15px;
+            width: 15px;
+            background-color: red;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 10px red;
+        }
+
+        .give-me-btn {
+            background: #ff3333;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Version Badge -->
+    <div class="version-badge">v2.0 Advanced</div>
+
+    <!-- Header -->
+    <header>
+        <h1>❤️ Clouds<br>Modding Hub ❤️</h1>
+        <p class="shoutout">shout out skeleton for this mel.</p>
+    </header>
+
+    <!-- Discord Button -->
+    <a href="#" class="discord-btn">
+        <span>❤️</span> Join The Discord!
+    </a>
+
+    <!-- Main Buttons -->
+    <div class="card-container">
+        <!-- APKs Button -->
+        <div class="card" onclick="openApkModal()">
+            <div class="card-icon">📱</div>
+            <div class="card-title">APKs</div>
+        </div>
+
+        <!-- Metadatas Button -->
+        <div class="card" onclick="openMetaModal()">
+            <div class="card-icon">🧠</div>
+            <div class="card-title">Metadatas</div>
+        </div>
+
+        <!-- OBBs Button (Static for now) -->
+        <div class="card">
+            <div class="card-icon">📦</div>
+            <div class="card-title">OBBs</div>
+        </div>
+    </div>
+
+    <!-- Audio Player Button -->
+    <div class="audio-fab" onclick="toggleAudio()">
+        <span id="audioIcon">🔊</span>
+    </div>
+
+    <!-- Hidden Audio Elements -->
+    <!-- 
+      NOTE: Since I cannot upload actual files, I have put placeholders below.
+      To make this work perfectly, download the MP3s and name them:
+      1. song1.mp3 (The Magical Dude song)
+      2. song2.mp3 (Poster Boy by 2hollis)
+      3. song3.mp3 (Montagem Lunar Diamente Meow Synth)
+    -->
+    <audio id="bgMusic" preload="auto"></audio>
+
+
+    <!-- MODALS -->
+
+    <!-- APK Modal -->
+    <div class="modal-overlay" id="apkModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModals()">&times;</span>
+            <h2>APK Status</h2>
+            <div class="status-row">
+                Supertag apk <span class="status-dot"></span>
+            </div>
+            <p style="margin-top:10px; font-size: 0.8rem; color: #888;">(Not working)</p>
+        </div>
+    </div>
+
+    <!-- Metadata Modal -->
+    <div class="modal-overlay" id="metaModal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModals()">&times;</span>
+            <h2 id="metaText">no metadataz available my man:(</h2>
+            <button class="give-me-btn" id="giveBtn" onclick="changeMetaText()">too bad give me</button>
+        </div>
+    </div>
+
+
+    <script>
+        /* --- JAVASCRIPT LOGIC --- */
+
+        // 1. Audio System
+        const musicPlayer = document.getElementById('bgMusic');
+        const audioIcon = document.getElementById('audioIcon');
+        
+        // Playlist Array - REPLACE THESE URLS WITH YOUR ACTUAL FILES IF NEEDED
+        // For now I am using placeholders or finding online sources to simulate the code structure
+        const playlist = [
+            "https://ia800108.us.archive.org/5/items/who-the-fuck-do-you-think-i-am/Who%20the%20fuck%20do%20you%20think%20I%20am.mp3", // Attempting a magical dude link
+            "path/to/poster_boy_2hollis.mp3", // You need to download this file
+            "path/to/montagem_lunar.mp3"      // You need to download this file
+        ];
+
+        let currentSongIndex = 0;
+        let isPlaying = false;
+
+        // Function to load and play song
+        function playSong(index) {
+            // Check if file exists (basic error handling for the demo)
+            musicPlayer.src = playlist[index];
+            musicPlayer.play().catch(e => {
+                console.log("Audio play failed (user needs to interact first or file missing): " + e);
+            });
+        }
+
+        // Handle Song Ending (Loop to next)
+        musicPlayer.addEventListener('ended', () => {
+            currentSongIndex++;
+            if (currentSongIndex >= playlist.length) {
+                currentSongIndex = 0; // Loop back to start
+            }
+            playSong(currentSongIndex);
+        });
+
+        // Toggle Audio Button
+        function toggleAudio() {
+            if (isPlaying) {
+                musicPlayer.pause();
+                audioIcon.innerText = "🔇";
+                isPlaying = false;
+            } else {
+                // If starting for the first time
+                if (!musicPlayer.src) {
+                   playSong(0);
+                } else {
+                    musicPlayer.play();
+                }
+                audioIcon.innerText = "🔊";
+                isPlaying = true;
+            }
+        }
+        
+        // Auto-start logic (Browsers block autoplay, so we wait for first click anywhere)
+        document.body.addEventListener('click', function() {
+            if(!isPlaying && !musicPlayer.src) {
+                toggleAudio();
+            }
+        }, {once:true});
+
+
+        // 2. Modal Logic
+        const apkModal = document.getElementById('apkModal');
+        const metaModal = document.getElementById('metaModal');
+
+        function openApkModal() {
+            apkModal.style.display = 'flex';
+        }
+
+        function openMetaModal() {
+            // Reset text when opening
+            document.getElementById('metaText').innerText = "no metadataz available my man:(";
+            document.getElementById('giveBtn').style.display = "inline-block";
+            metaModal.style.display = 'flex';
+        }
+
+        function closeModals() {
+            apkModal.style.display = 'none';
+            metaModal.style.display = 'none';
+        }
+
+        // Close modal if clicking outside the box
+        window.onclick = function(event) {
+            if (event.target == apkModal) {
+                apkModal.style.display = "none";
+            }
+            if (event.target == metaModal) {
+                metaModal.style.display = "none";
+            }
+        }
+
+        // 3. Metadata Text Transformation Logic
+        function changeMetaText() {
+            const textElement = document.getElementById('metaText');
+            const btnElement = document.getElementById('giveBtn');
+            
+            textElement.innerText = "hey not kewl man>:(";
+            // Hide the button after clicking so they can't click it again
+            btnElement.style.display = "none";
+        }
+
+    </script>
+</body>
+</html>
